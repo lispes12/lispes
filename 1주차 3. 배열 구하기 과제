@@ -28,6 +28,6 @@ int main()
         if(max < number[i]; max = number[i];
         if(min > number[i]; min = number[i];
     }
-    printf("%f", avg);
+    printf("avg = %f, max = %d, min = %d\n", avg, max, min);
     return 0;
 }
