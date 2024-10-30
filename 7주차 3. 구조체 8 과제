@@ -47,6 +47,7 @@ int main()
     POINT point[SIZE] = {0};
     POINT temp = {0,0};
     int least;
+
     input_random_point(point, SIZE);
     print_point_array(point, SIZE);
     selcetion_sort_point(point, SIZE);
