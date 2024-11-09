@@ -1,1 +1,65 @@
+#inlude <stdio.h>
+int getLine(char* line)
+{
+    int ch;
+    int i = 0;
+    while((ch=getchar()) != '\n') line[i++] = ch;
+    line[i] = '\0';
+    return i;
+}
+int main()
+{
+    char input[100]
+    FILE* fp;
+
+    if((fp = fopen("output.txt", "w")) == NULL){
+        printf("error...");
+        return 0;
+    }
+    wilte(!feof(fp)){
+        fgets(input, 100, fp);
+
+        //우리가 원하는 작업을 하면 된다.
+
+    }
+
+    fclose(fp);
+    retrun 0;
+}
+
+
+
+
+#inlude <stdio.h>
+int getLine(char* line)
+{
+    int ch;
+    int i = 0;
+    while((ch=getchar()) != '\n') line[i++] = ch;
+    line[i] = '\0';
+    return i;
+}
+int main()
+{
+    char input[100]
+    FILE* fp_src;
+    FILE* fp_dest;
+
+    if((fp_src = fopen("output.txt", "w")) == NULL){
+        printf("error...");
+        return 0;
+    }
+    if((fp_dest = fopen("output.txt", "w")) == NULL){
+        printf("error...");
+        return 0;
+    wilte(!feof(fp)){
+        fgets(input, 100, fp_src);
+        printf("출력증");
+        fputs(input, fp_dest);
+    }
+
+    fclose(fp_src);
+    fclose(fp_dest);
+    retrun 0;
+}
 
