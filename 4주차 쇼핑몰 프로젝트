@@ -1,143 +1,119 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MAX_PRODUCTS 100
+#define MAX_PRODUCTS 5
 
 typedef struct {
+    int id;
     int stock;
     int sales;
-    int inventory;
-    char name[20];
+    int incoming;
+    char name[50];
 } Product;
 
-void addStock(Product products[], int count);
-void sellProduct(Product products[], int count);
-void displayInventory(Product products[], int count);
-void inputProductNames(Product products[], int count);
-
-int main() {
-    int productCount;
-    Product products[MAX_PRODUCTS] = {0};
-
-    printf("상품 개수를 입력하세요 (1 ~ %d): ", MAX_PRODUCTS);
-    scanf("%d", &productCount);
-
-    int choice;
-    do {
-        printf("\n[쇼핑몰 관리 프로그램]\n");
-        printf("1. 입고\n");
-        printf("2. 판매\n");
-        printf("3. 상품현황\n");
-        printf("4. 상품명 입력\n");
-        printf("5. 종료\n");
-        printf("원하는 메뉴를 선택하세요: ");
-        scanf("%d", &choice);
-
-        switch (choice) {
-            case 1:
-                addStock(products, productCount);
-                break;
-            case 2:
-                sellProduct(products, productCount);
-                break;
-            case 3:
-                displayInventory(products, productCount);
-                break;
-            case 4:
-                inputProductNames(products, productCount);
-                break;
-            case 5:
-                printf("프로그램을 종료합니다.\n");
-                break;
-            default:
-                printf("잘못된 선택입니다.\n");
-        }
-    } while (choice != 5);
-
-    return 0;
-}
-
 void addStock(Product products[], int count) {
-    int option;
-    printf("입고수량 입력: 전체 상품(1), 개별 상품(2): ");
-    scanf("%d", &option);
-
-    if (option == 1) {
-        printf("전체 상품 입고수량을 입력하세요: ");
+    int choice, id, quantity;
+    printf("입고수량 입력 : 전체 상품 입고수량 입력 1, 개별 상품 입력 2를 선택\n");
+    scanf("%d", &choice);
+    if (choice == 1) {
+        printf("전체 상품의 입고수량 입력 : ");
         for (int i = 0; i < count; i++) {
-            int quantity;
-            scanf("%d", &quantity);
-            products[i].stock += quantity;
-            products[i].inventory += quantity;
+            scanf("%d", &products[i].incoming);
+            products[i].stock += products[i].incoming;
         }
-    } else if (option == 2) {
-        int id, quantity;
-        printf("상품 ID와 입고수량을 입력하세요: ");
-        scanf("%d %d", &id, &quantity);
+    } else if (choice == 2) {
+        printf("상품ID : ");
+        scanf("%d", &id);
+        printf("입고수량 : ");
+        scanf("%d", &quantity);
+        products[id - 1].incoming = quantity;
         products[id - 1].stock += quantity;
-        products[id - 1].inventory += quantity;
-    } else {
-        printf("잘못된 입력입니다.\n");
     }
 }
 
 void sellProduct(Product products[], int count) {
-    int option;
-    printf("판매수량 입력: 전체 상품(1), 개별 상품(2): ");
-    scanf("%d", &option);
-
-    if (option == 1) {
-        printf("전체 상품 판매수량을 입력하세요: ");
+    int choice, id, quantity;
+    printf("판매수량 입력 : 전체 상품 판매수량 입력 1, 개별 상품 입력 2를 선택\n");
+    scanf("%d", &choice);
+    if (choice == 1) {
+        printf("전체 상품의 판매수량 입력 : ");
         for (int i = 0; i < count; i++) {
-            int quantity;
-            scanf("%d", &quantity);
-            products[i].sales += quantity;
-            products[i].inventory -= quantity;
+            scanf("%d", &products[i].sales);
+            products[i].stock -= products[i].sales;
         }
-    } else if (option == 2) {
-        int id, quantity;
-        printf("상품 ID와 판매수량을 입력하세요: ");
-        scanf("%d %d", &id, &quantity);
-        products[id - 1].sales += quantity;
-        products[id - 1].inventory -= quantity;
-    } else {
-        printf("잘못된 입력입니다.\n");
+    } else if (choice == 2) {
+        printf("상품ID : ");
+        scanf("%d", &id);
+        printf("판매수량 : ");
+        scanf("%d", &quantity);
+        products[id - 1].sales = quantity;
+        products[id - 1].stock -= quantity;
     }
 }
 
-void displayInventory(Product products[], int count) {
-    int totalSales = 0;
-    int totalStock = 0;
-    int maxSales = 0, minSales = __INT_MAX__;
-    int maxId = 0, minId = 0;
-
-    printf("재고수량: ");
+void displayStatus(Product products[], int count) {
+    int totalSales = 0, maxSales = 0, minSales = 100000;
+    float saleRate;
+    printf("재고수량 : ");
     for (int i = 0; i < count; i++) {
-        printf("%d ", products[i].inventory);
+        printf("%d ", products[i].stock);
         totalSales += products[i].sales;
-        totalStock += products[i].stock;
-        if (products[i].sales > maxSales) {
-            maxSales = products[i].sales;
-            maxId = i + 1;
-        }
-        if (products[i].sales < minSales) {
-            minSales = products[i].sales;
-            minId = i + 1;
-        }
-        if (products[i].inventory <= 2) {
-            printf("\n상품 ID %d (%s) : 재고부족(%d)", i + 1, products[i].name, products[i].inventory);
-        }
+        if (products[i].sales > maxSales) maxSales = products[i].sales;
+        if (products[i].sales < minSales) minSales = products[i].sales;
     }
-
-    double salesRate = (double)totalSales / totalStock * 100;
-    printf("\n총 판매량: %d (판매율: %.2f%%)\n", totalSales, salesRate);
-    printf("가장 많이 판매된 상품: ID %d, %s, 판매량 %d\n", maxId, products[maxId - 1].name, maxSales);
-    printf("가장 적게 판매된 상품: ID %d, %s, 판매량 %d\n", minId, products[minId - 1].name, minSales);
+    saleRate = (float)totalSales / count * 100;
+    printf("\n총 판매량 : %d (판매율 %.2f%%)\n", totalSales, saleRate);
+    for (int i = 0; i < count; i++) {
+        if (products[i].sales == maxSales)
+            printf("가장 많이 판매된 상품 : ID %d, 상품명 : %s, 판매량 %d\n", products[i].id, products[i].name, products[i].sales);
+        if (products[i].sales == minSales)
+            printf("가장 적게 판매된 상품 : ID %d, 상품명 : %s, 판매량 %d\n", products[i].id, products[i].name, products[i].sales);
+        if (products[i].stock <= 2)
+            printf("상품 ID %d : 상품명 : %s 재고부족(%d)\n", products[i].id, products[i].name, products[i].stock);
+    }
 }
 
-void inputProductNames(Product products[], int count) {
+void inputProductName(Product products[], int count) {
     for (int i = 0; i < count; i++) {
-        printf("ID %d 상품명: ", i + 1);
+        printf("ID %d 상품명 : ", products[i].id);
         scanf("%s", products[i].name);
     }
+}
+
+int main() {
+    int choice, count = MAX_PRODUCTS;
+    Product products[MAX_PRODUCTS] = {0};
+
+    for (int i = 0; i < count; i++) {
+        products[i].id = i + 1;
+    }
+
+    while (1) {
+        printf("\n[쇼핑몰 관리 프로그램]\n");
+        printf("원하는 메뉴를 선택하세요.(1. 입고, 2. 판매, 3. 상품현황, 4. 상품명 입력, 5. 종료)\n");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                addStock(products, count);
+                break;
+            case 2:
+                sellProduct(products, count);
+                break;
+            case 3:
+                displayStatus(products, count);
+                break;
+            case 4:
+                inputProductName(products, count);
+                break;
+            case 5:
+                printf("프로그램을 종료합니다.\n");
+                return 0;
+            default:
+                printf("잘못된 입력입니다. 다시 선택하세요.\n");
+                break;
+        }
+    }
+
+    return 0;
 }
