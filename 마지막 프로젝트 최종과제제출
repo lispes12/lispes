@@ -5,6 +5,7 @@
 
 void getBinary(char bin[], char str[], int n) {
     int len = strlen(str);
+
     for (int i = 0; i < n - len; i++) {
         bin[i] = '0';
     }
